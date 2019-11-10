@@ -10,17 +10,16 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
 from fcn import VGGNet, FCN32s, FCN16s, FCN8s, FCNs
-from Cityscapes_loader import CityscapesDataset
 from CamVid_loader import CamVidDataset
 
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 import numpy as np
 import time
 import sys
 import os
 
 
-n_class    = 20
+n_class    = 32
 
 batch_size = 6
 epochs     = 500
@@ -32,10 +31,7 @@ gamma      = 0.5
 configs    = "FCNs-BCEWithLogits_batch{}_epoch{}_RMSprop_scheduler-step{}-gamma{}_lr{}_momentum{}_w_decay{}".format(batch_size, epochs, step_size, gamma, lr, momentum, w_decay)
 print("Configs:", configs)
 
-if sys.argv[1] == 'CamVid':
-    root_dir   = "CamVid/"
-else
-    root_dir   = "CityScapes/"
+root_dir   = "/home/timosk/FCN/CamVid/"
 train_file = os.path.join(root_dir, "train.csv")
 val_file   = os.path.join(root_dir, "val.csv")
 
@@ -48,16 +44,10 @@ model_path = os.path.join(model_dir, configs)
 use_gpu = torch.cuda.is_available()
 num_gpu = list(range(torch.cuda.device_count()))
 
-if sys.argv[1] == 'CamVid':
-    train_data = CamVidDataset(csv_file=train_file, phase='train')
-else:
-    train_data = CityscapesDataset(csv_file=train_file, phase='train')
+train_data = CamVidDataset(csv_file=train_file, phase='train')
 train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=8)
 
-if sys.argv[1] == 'CamVid':
-    val_data = CamVidDataset(csv_file=val_file, phase='val', flip_rate=0)
-else:
-    val_data = CityscapesDataset(csv_file=val_file, phase='val', flip_rate=0)
+val_data = CamVidDataset(csv_file=val_file, phase='val', flip_rate=0)
 val_loader = DataLoader(val_data, batch_size=1, num_workers=8)
 
 vgg_model = VGGNet(requires_grad=True, remove_fc=True)
@@ -102,7 +92,7 @@ def train():
             optimizer.step()
 
             if iter % 10 == 0:
-                print("epoch{}, iter{}, loss: {}".format(epoch, iter, loss.data[0]))
+                print("epoch{}, iter{}, loss: {}".format(epoch, iter, loss.data))
         
         print("Finish epoch {}, time elapsed {}".format(epoch, time.time() - ts))
         torch.save(fcn_model, model_path)

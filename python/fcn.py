@@ -151,7 +151,6 @@ class FCNs(nn.Module):
         score = score + x1                                # element-wise add, size=(N, 64, x.H/2, x.W/2)
         score = self.bn5(self.relu(self.deconv5(score)))  # size=(N, 32, x.H, x.W)
         score = self.classifier(score)                    # size=(N, n_class, x.H/1, x.W/1)
-
         return score  # size=(N, n_class, x.H/1, x.W/1)
 
 

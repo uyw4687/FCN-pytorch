@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 import scipy.misc
@@ -14,7 +14,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import utils
 
 
-root_dir   = "CamVid/"
+root_dir   = "/home/timosk/FCN/CamVid/"
 train_file = os.path.join(root_dir, "train.csv")
 val_file   = os.path.join(root_dir, "val.csv")
 
@@ -41,7 +41,7 @@ class CamVidDataset(Dataset):
             self.new_w = train_w
         elif phase == 'val':
             self.flip_rate = 0.
-            self.crop = False
+            # self.crop = False
             self.new_h = val_h
             self.new_w = val_w
 
